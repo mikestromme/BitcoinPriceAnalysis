@@ -2,10 +2,17 @@ import openai
 import json
 import requests
 import streamlit as st
+import configparser
+
+
+# grab credentials from secure folder
+config = configparser.ConfigParser()
+config.read("config.txt")
+api_key = config.get("configuration","openai_api")
 
 
 
-openai.api_key = ""
+openai.api_key = api_key
 
 def BasicGeneration(userPrompt):
     completion = openai.ChatCompletion.create(
@@ -16,64 +23,36 @@ def BasicGeneration(userPrompt):
     return completion.choices[0].message.content
 
 
-st.title('Bitcoin Analyzer With ChatGPT')
-st.subheader(
-    'Subscribe to my channel!')
-
-def GetBitCoinPrices():
-    
-    
-    # Define the API endpoint and query parameters
-    url = "https://coinranking1.p.rapidapi.com/coin/Qwsogvtv82FCd/history"
-    querystring = {
-        "referenceCurrencyUuid": "yhjMzLPhuIDl",
-        "timePeriod": "7d"
-    }
-    # Define the request headers with API key and host
-    headers = {
-        "X-RapidAPI-Key": "",
-        "X-RapidAPI-Host": "coinranking1.p.rapidapi.com"
-    }
-    # Send a GET request to the API endpoint with query parameters and headers
-    response = requests.request(
-        "GET", url, headers=headers, params=querystring)
-    # Parse the response data as a JSON object
-    JSONResult = json.loads(response.text)
-    # Extract the "history" field from the JSON response
-    history = JSONResult["data"]["history"]
-    # Extract the "price" field from each element in the "history" array and add to a list
-    prices = []
-    for change in history:
-        prices.append(change["price"])
-    # Join the list of prices into a comma-separated string
-    pricesList = ','.join(prices)
-    # Return the comma-separated string of prices
-    return pricesList
-
-
+st.title('Book Summarizer With ChatGPT')
 
     
 if st.button('Analyze'):
-    with st.spinner('Getting Bitcoin Prices...'):
-        bitcoinPrices = GetBitCoinPrices()
-        st.success('Done!')
-    with st.spinner('Analyzing Bitcoin Prices...'):
-        chatGPTPrompt = f"""You are an expert crypto trader with more than 10 years of experience, 
-                    I will provide you with a list of bitcoin prices for the last 7 days
-                    can you provide me with a technical analysis
-                    of Bitcoin based on these prices. here is what I want: 
-                    Price Overview, 
-                    Moving Averages, 
-                    Relative Strength Index (RSI),
-                    Moving Average Convergence Divergence (MACD),
-                    Advice and Suggestion,
-                    Do I buy or sell?
-                    Please be as detailed as much as you can, and explain in a way any beginner can understand. and make sure to use headings
-                    Here is the price list: {bitcoinPrices}"""
+    with st.spinner('Getting book summary...'):
+        chatGPTPrompt = f"""Write a thorough yet concise summary of This Naked Mind by Annie Grace.
+
+                            concentrate on only the most important takeaways and primary points from the book that together will give me a solid overview and understanding of the book and its topic
+
+
+                            Include all of the following in your summary:
+
+                            Main topic or theme of the book
+                            Key ideas or arguments presented
+                            Chapter titles or main sections of the book with a paragraph on each
+                            Key takeaways or conclusions
+                            Author's background and qualifications
+                            Comparison to other books on the same subject
+                            Target audience or intended readership
+                            Reception or critical response to the book
+                            Publisher and First Published Date
+                            Recommendations [Other similar books on the same topic]
+
+                            To sum up:  The book's biggest Takeaway and point in a singular sentence
+
+                            OUTPUT: Markdown format with #Headings, ##H2, ###H3, + bullet points, + sub-bullet points"""
     
         analysis = BasicGeneration(chatGPTPrompt)
         st.text_area("Analysis", analysis,
-                     height=500)
+                    height=500)
         st.success('Done!')
 
 
