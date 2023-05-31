@@ -25,10 +25,18 @@ def BasicGeneration(userPrompt):
 
 st.title('Book Summarizer With ChatGPT')
 
+st.text_input("Book Title", key="book_title")
+
+st.text_input("Author", key="author")
+
+book_title = st.session_state.book_title
+author = st.session_state.author
+
+
     
 if st.button('Analyze'):
     with st.spinner('Getting book summary...'):
-        chatGPTPrompt = f"""Write a thorough yet concise summary of This Naked Mind by Annie Grace.
+        chatGPTPrompt = f"""Write a thorough yet concise summary of """ + book_title + """ This Naked Mind by """ + author + """.
 
                             concentrate on only the most important takeaways and primary points from the book that together will give me a solid overview and understanding of the book and its topic
 

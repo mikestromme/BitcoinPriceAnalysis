@@ -2,10 +2,17 @@ import openai
 import json
 import requests
 import streamlit as st
+import configparser
+
+# grab credentials from secure folder
+config = configparser.ConfigParser()
+config.read("config.txt")
+api_key = config.get("configuration","openai_api")
+rapid_api_key = config.get("configuration","rapid_api")
 
 
 
-openai.api_key = ""
+openai.api_key = api_key
 
 def BasicGeneration(userPrompt):
     completion = openai.ChatCompletion.create(
@@ -31,7 +38,7 @@ def GetBitCoinPrices():
     }
     # Define the request headers with API key and host
     headers = {
-        "X-RapidAPI-Key": "",
+        "X-RapidAPI-Key": rapid_api_key,
         "X-RapidAPI-Host": "coinranking1.p.rapidapi.com"
     }
     # Send a GET request to the API endpoint with query parameters and headers
