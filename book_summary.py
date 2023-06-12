@@ -5,6 +5,9 @@ import streamlit as st
 import configparser
 
 
+# streamlit run c:/Users/mstromme/Documents/Development/Python/BitcoinPriceAnalysis/book_summary.py
+
+
 # grab credentials from secure folder
 config = configparser.ConfigParser()
 config.read("config.txt")
@@ -23,12 +26,11 @@ def BasicGeneration(userPrompt):
     return completion.choices[0].message.content
 
 
-st.title('Book Summarizer With ChatGPT')
+st.title('Book Summarizer')
 
+# text boxes
 st.text_input("Book Title", key="book_title")
-
 st.text_input("Author", key="author")
-
 book_title = st.session_state.book_title
 author = st.session_state.author
 
@@ -36,7 +38,7 @@ author = st.session_state.author
     
 if st.button('Analyze'):
     with st.spinner('Getting book summary...'):
-        chatGPTPrompt = f"""Write a thorough yet concise summary of """ + book_title + """ This Naked Mind by """ + author + """.
+        chatGPTPrompt = f"""Write a thorough yet concise summary of """ + book_title + """ by """ + author + """.
 
                             concentrate on only the most important takeaways and primary points from the book that together will give me a solid overview and understanding of the book and its topic
 
@@ -62,6 +64,8 @@ if st.button('Analyze'):
         st.text_area("Analysis", analysis,
                     height=500)
         st.success('Done!')
+
+
 
 
 
